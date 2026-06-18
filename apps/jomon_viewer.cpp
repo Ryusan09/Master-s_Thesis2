@@ -131,8 +131,8 @@ int main(int argc, char** argv) {
             jomon::PipelineResult pr = jomon::run_pipeline(ply_path, cfg);
             const auto& r = pr.period;
             fmt::print(stderr,
-                "pitch={:.3f}mm  direction={:.1f}deg  dxdy=({:.3f},{:.3f})mm  confidence={:.2f}\n",
-                r.pitch_mm, r.direction_deg, r.dx_mm, r.dy_mm, r.confidence);
+                "pitch={:.3f}mm  groove_dir={:.1f}deg  period_dir={:.1f}deg  confidence={:.2f}\n",
+                r.pitch_mm, r.groove_direction_deg, r.direction_deg, r.confidence);
 
             auto colors = make_period_colors(mesh, pr);
             ps_mesh->addVertexColorQuantity("period stripes", colors)->setEnabled(true);
@@ -140,12 +140,14 @@ int main(int argc, char** argv) {
             // Add a title annotation in the Polyscope ImGui panel.
             polyscope::state::userCallback = [&r]() {
                 ImGui::TextUnformatted("=== Period estimation ===");
-                ImGui::Text("pitch      : %.3f mm",  r.pitch_mm);
-                ImGui::Text("direction  : %.1f deg", r.direction_deg);
-                ImGui::Text("dxdy       : (%.3f, %.3f) mm", r.dx_mm, r.dy_mm);
-                ImGui::Text("confidence : %.2f",     r.confidence);
+                ImGui::Text("pitch        : %.3f mm",  r.pitch_mm);
+                ImGui::Text("groove_dir   : %.1f deg", r.groove_direction_deg);
+                ImGui::Text("period_dir   : %.1f deg", r.direction_deg);
+                ImGui::Text("period_vec   : (%.3f, %.3f) mm", r.dx_mm, r.dy_mm);
+                ImGui::Text("confidence   : %.2f",     r.confidence);
                 ImGui::Separator();
                 ImGui::TextUnformatted("Orange stripe = 1 period");
+                ImGui::TextUnformatted("Stripes run along groove_dir");
             };
 
         } else if (highlight) {

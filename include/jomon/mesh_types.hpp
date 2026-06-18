@@ -19,11 +19,12 @@ struct HeightMap {
 };
 
 struct PeriodResult {
-    float pitch_mm;       // estimated rope pitch in mm
-    float direction_deg;  // rope travel direction, degrees from +u axis
-    float dx_mm;          // period vector x component (mm)
-    float dy_mm;          // period vector y component (mm)
-    float confidence;     // peak sharpness ratio [0, 1]
+    float pitch_mm;            // inter-groove distance (mm)
+    float direction_deg;       // period vector angle from +u axis (deg); perpendicular to grooves
+    float groove_direction_deg;// groove (strand) direction from +u axis, in [0, 180) deg
+    float dx_mm;               // period vector x component (mm)
+    float dy_mm;               // period vector y component (mm)
+    float confidence;          // peak sharpness ratio [0, 1]
 };
 
 // Full pipeline output: period result + reference plane + selected vertices.

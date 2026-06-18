@@ -172,6 +172,14 @@ PeriodResult estimate_period(const HeightMap& hmap, const Config& cfg) {
     result.pitch_mm      = std::sqrt(result.dx_mm * result.dx_mm + result.dy_mm * result.dy_mm);
     result.direction_deg = std::atan2(result.dy_mm, result.dx_mm) * 180.0f / (float)M_PI;
     result.confidence    = confidence;
+
+    // Groove (strand) direction is perpendicular to the period vector.
+    // Normalise to [0, 180) so it represents an undirected line direction.
+    float groove = result.direction_deg + 90.0f;
+    groove = std::fmod(groove, 180.0f);
+    if (groove < 0.0f) groove += 180.0f;
+    result.groove_direction_deg = groove;
+
     return result;
 }
 
