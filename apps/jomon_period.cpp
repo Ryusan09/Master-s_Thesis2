@@ -49,8 +49,8 @@ int main(int argc, char** argv) {
     try {
         jomon::PipelineResult pr = jomon::run_pipeline(ply_path, cfg);
         const jomon::PeriodResult& r = pr.period;
-        fmt::print("pitch={:.3f}mm  groove_dir={:.1f}deg  confidence={:.2f}\n",
-                   r.pitch_mm, r.groove_direction_deg, r.confidence);
+        fmt::print("pitch={:.3f}mm  groove_dir={:.1f}deg  rolling_dir={:.1f}deg  confidence={:.2f}\n",
+                   r.pitch_mm, r.groove_direction_deg, r.rolling_direction_deg, r.confidence);
         fmt::print("period_vec=({:.3f}, {:.3f})mm  period_dir={:.1f}deg\n",
                    r.dx_mm, r.dy_mm, r.direction_deg);
         fmt::print("grid={:.2f}mm  detrend_window={}\n",

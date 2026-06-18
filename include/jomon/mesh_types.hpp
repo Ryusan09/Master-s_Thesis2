@@ -19,12 +19,14 @@ struct HeightMap {
 };
 
 struct PeriodResult {
-    float pitch_mm;            // inter-groove distance (mm)
-    float direction_deg;       // period vector angle from +u axis (deg); perpendicular to grooves
-    float groove_direction_deg;// groove (strand) direction from +u axis, in [0, 180) deg
-    float dx_mm;               // period vector x component (mm)
-    float dy_mm;               // period vector y component (mm)
-    float confidence;          // peak sharpness ratio [0, 1]
+    float pitch_mm;             // inter-groove distance (mm)
+    float direction_deg;        // period vector angle from +u axis (deg); perpendicular to grooves
+    float groove_direction_deg; // groove (strand) direction from +u axis, in [0, 180) deg
+    float rolling_direction_deg;// candidate rope-rolling direction from +u axis, in [0, 180) deg
+                                // = dominant gradient direction via structure tensor
+    float dx_mm;                // period vector x component (mm)
+    float dy_mm;                // period vector y component (mm)
+    float confidence;           // peak sharpness ratio [0, 1]
 };
 
 // Full pipeline output: period result + reference plane + selected vertices.

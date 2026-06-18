@@ -141,13 +141,19 @@ int main(int argc, char** argv) {
             polyscope::state::userCallback = [&r]() {
                 ImGui::TextUnformatted("=== Period estimation ===");
                 ImGui::Text("pitch        : %.3f mm",  r.pitch_mm);
+                ImGui::Separator();
+                ImGui::TextUnformatted("-- Groove (strand) direction --");
                 ImGui::Text("groove_dir   : %.1f deg", r.groove_direction_deg);
+                ImGui::Separator();
+                ImGui::TextUnformatted("-- Rolling direction (candidate) --");
+                ImGui::Text("rolling_dir  : %.1f deg", r.rolling_direction_deg);
+                ImGui::TextUnformatted("  (structure tensor; perp. to grooves)");
+                ImGui::Separator();
                 ImGui::Text("period_dir   : %.1f deg", r.direction_deg);
                 ImGui::Text("period_vec   : (%.3f, %.3f) mm", r.dx_mm, r.dy_mm);
                 ImGui::Text("confidence   : %.2f",     r.confidence);
                 ImGui::Separator();
                 ImGui::TextUnformatted("Orange stripe = 1 period");
-                ImGui::TextUnformatted("Stripes run along groove_dir");
             };
 
         } else if (highlight) {

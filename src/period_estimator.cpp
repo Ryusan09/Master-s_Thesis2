@@ -63,6 +63,11 @@ PipelineResult run_pipeline(const std::string& ply_path, const Config& cfg) {
     vlog("Estimating period via 2-D autocorrelation...");
     PeriodResult result = estimate_period(hmap, cfg);
 
+    vlog("Estimating rolling direction via structure tensor...");
+    result.rolling_direction_deg = dominant_gradient_direction(hmap);
+    vlog(fmt::format("rolling_dir={:.1f}deg  groove_dir={:.1f}deg",
+                     result.rolling_direction_deg, result.groove_direction_deg));
+
     vlog(fmt::format("Done in {:.2f}s", t.elapsed()));
     return PipelineResult{result, hmap, selected};
 }

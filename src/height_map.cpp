@@ -96,4 +96,63 @@ HeightMap build_height_map(const MeshData&        mesh,
     return hmap;
 }
 
+
+// ---------------------------------------------------------------------------
+// Structure-tensor analysis
+// ---------------------------------------------------------------------------
+// For each interior cell with valid neighbors, compute the central-difference
+// gradient (gx in u direction, gy in v direction) and accumulate the 2×2
+// structure tensor J = sum [[gx², gx·gy], [gx·gy, gy²]].
+//
+// The eigenvector of J's largest eigenvalue points in the direction where
+// depth changes most rapidly — i.e., perpendicular to the groove direction.
+// This is the candidate rope-rolling direction, independent of autocorrelation.
+float dominant_gradient_direction(const HeightMap& hmap) {
+    const auto& H = hmap.H_detrended;
+    const int rows = H.rows(), cols = H.cols();
+    const float p = hmap.grid_pitch;
+
+    double J11 = 0, J12 = 0, J22 = 0;  // structure tensor accumulator
+    int n = 0;
+
+    for (int r = 1; r < rows - 1; ++r) {
+        for (int c = 1; c < cols - 1; ++c) {
+            // Need all four neighbours for central difference
+            if (std::isnan(H(r, c))   || std::isnan(H(r, c-1)) ||
+                std::isnan(H(r, c+1)) || std::isnan(H(r-1, c)) ||
+                std::isnan(H(r+1, c)))
+                continue;
+
+            double gx = (H(r, c+1) - H(r, c-1)) / (2.0 * p);  // du
+            double gy = (H(r+1, c) - H(r-1, c)) / (2.0 * p);  // dv
+
+            J11 += gx * gx;
+            J12 += gx * gy;
+            J22 += gy * gy;
+            ++n;
+        }
+    }
+
+    if (n == 0) return 0.0f;
+
+    // 2×2 symmetric eigenvalue: [[J11, J12], [J12, J22]]
+    // λ = (J11+J22)/2 ± sqrt(((J11-J22)/2)^2 + J12^2)
+    double trace_half = (J11 + J22) * 0.5;
+    double disc       = std::sqrt(((J11 - J22) * 0.5) * ((J11 - J22) * 0.5) + J12 * J12);
+    double lambda_max = trace_half + disc;
+
+    // Eigenvector for lambda_max: proportional to (lambda_max - J22, J12)
+    // (or (J12, lambda_max - J11) — same up to sign)
+    double ex = J12;
+    double ey = lambda_max - J11;
+    // If degenerate (isotropic texture), direction is undefined
+    if (std::abs(ex) < 1e-12 && std::abs(ey) < 1e-12) return 0.0f;
+
+    float angle_deg = static_cast<float>(std::atan2(ey, ex) * 180.0 / M_PI);
+    // Normalise to [0, 180) — it's a line direction, not a vector
+    if (angle_deg < 0.0f)   angle_deg += 180.0f;
+    if (angle_deg >= 180.0f) angle_deg -= 180.0f;
+    return angle_deg;
+}
+
 } // namespace jomon
