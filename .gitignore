@@ -61,9 +61,19 @@ compile_commands.json
 # vcpkg
 vcpkg_installed/
 
+# vendored tools (bootstrapped locally, not committed)
+vendor/
+
 # debug information files
 *.dwo
 
 # test output & cache
 Testing/
 .cache/
+
+# Polyscope / ImGui runtime state
+.polyscope.ini
+imgui.ini
+
+# Claude Code project memory (local only)
+.claude/

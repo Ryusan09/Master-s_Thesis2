@@ -1,0 +1,87 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "toolchainFile": "${sourceDir}/vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "JOMON_BUILD_VIEWER": "OFF",
+        "JOMON_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "windows-msvc-release",
+      "displayName": "Windows MSVC Release (no viewer)",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "architecture": { "value": "x64", "strategy": "set" }
+    },
+    {
+      "name": "windows-msvc-viewer",
+      "displayName": "Windows MSVC Release + Polyscope viewer",
+      "inherits": "windows-msvc-release",
+      "cacheVariables": {
+        "JOMON_BUILD_VIEWER": "ON"
+      }
+    },
+    {
+      "name": "macos-clang-release",
+      "displayName": "macOS Clang Release (no viewer)",
+      "inherits": "base",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "macos-clang-viewer",
+      "displayName": "macOS Clang Release + Polyscope viewer",
+      "inherits": "macos-clang-release",
+      "cacheVariables": {
+        "JOMON_BUILD_VIEWER": "ON"
+      }
+    },
+    {
+      "name": "linux-gcc-release",
+      "displayName": "Linux GCC Release (no viewer)",
+      "inherits": "base",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-msvc-release",
+      "configurePreset": "windows-msvc-release",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-msvc-viewer",
+      "configurePreset": "windows-msvc-viewer",
+      "configuration": "Release"
+    },
+    {
+      "name": "macos-clang-release",
+      "configurePreset": "macos-clang-release"
+    },
+    {
+      "name": "linux-gcc-release",
+      "configurePreset": "linux-gcc-release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-msvc-release",
+      "configurePreset": "windows-msvc-release",
+      "configuration": "Release"
+    },
+    {
+      "name": "macos-clang-release",
+      "configurePreset": "macos-clang-release"
+    }
+  ]
+}
